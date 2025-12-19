@@ -1,0 +1,104 @@
+{
+  "info": {
+    "_postman_id": "677067a0-ad77-44e9-8073-b965884634df",
+    "name": "Post API Documentation",
+    "description": "REST API documentation for managing posts.\n\nIncludes CRUD operations:\n• Get all posts\n• Get a single post\n• Insert post\n• Update post\n• Delete post",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Posts",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/projectP/api/post/post.php",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["projectP", "api", "post", "post.php"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Get Single Post",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "http://localhost/projectP/api/post/single.php?id=1",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["projectP", "api", "post", "single.php"],
+          "query": [
+            { "key": "id", "value": "1" }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Insert Post",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"title\": \"New Post\",\n  \"category\": \"php\",\n  \"description\": \"This is new content\"\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "http://localhost/projectP/api/post/insert.php",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["projectP", "api", "post", "insert.php"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update Post",
+      "request": {
+        "method": "PUT",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+        	"raw": "{\n    \"id\": 8,\n    \"title\": \"Update 9\",\n    \"description\": \"Updated data \",\n    \"category_id\": 1\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "http://localhost/projectP/api/post/update.php",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["projectP", "api", "post", "update.php"]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete Post",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          { "key": "Content-Type", "value": "application/json" }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"id\": 1\n}",
+          "options": { "raw": { "language": "json" } }
+        },
+        "url": {
+          "raw": "http://localhost/projectP/api/post/deleate.php",
+          "protocol": "http",
+          "host": ["localhost"],
+          "path": ["projectP", "api", "post", "delete.php"]
+        }
+      },
+      "response": []
+    }
+  ]
+}

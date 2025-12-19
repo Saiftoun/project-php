@@ -1,3 +1,9 @@
+<?php
+session_start();
+include_once('../products/config/database1.php');  // Changed include to include_once
+$database = new Database();
+$conn = $database->connect();
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,7 +17,7 @@
 <style>$
 .footer{
     position:absolute;
-    bottom:0;
+    bottom:5;
 }
 *{
     margin:0;
@@ -81,10 +87,11 @@
         <div class="col-md-2 bg-secondary p-3">
             <div>
                 <a href="#"><img src="../images/jus.webp" alt="Admin" class="admin"></a>
-                <p class="text-light text-center">Admin Name</p>
+                <p class="text-light text-center">Saifeddine tounsi</p>
             </div>
 
             <div class="button text-center">
+                <button class="btn btn-info w-100 my-1"><a href="index.php?insert_post" class="nav-link text-light">Insert Posts</a></button>
                 <button class="btn btn-info w-100 my-1"><a href="#" class="nav-link text-light">Insert Products</a></button>
                 <button class="btn btn-info w-100 my-1"><a href="#" class="nav-link text-light">View Products</a></button>
                 <button class="btn btn-info w-100 my-1"><a href="index.php?insert_category" class="nav-link text-light">Insert Categories</a></button>
@@ -94,7 +101,7 @@
                 <button class="btn btn-info w-100 my-1"><a href="#" class="nav-link text-light">All Orders</a></button>
                 <button class="btn btn-info w-100 my-1"><a href="#" class="nav-link text-light">All Payments</a></button>
                 <button class="btn btn-info w-100 my-1"><a href="index.php?view_users" class="nav-link text-light">List Users</a></button>
-                <button class="btn btn-info w-100 my-1"><a href="#" class="nav-link text-light">Logout</a></button>
+                <button class="btn btn-info w-100 my-1"><a href="../CRUD/logout.php" class="nav-link text-light">Logout</a></button>
             </div>
         </div>
 
@@ -109,27 +116,35 @@
     include("../CRUD/display.php");
    }
    ?>
-        </div>
-
-            <div class="container">
-        <?php
-   
+    </div>
+    
+    <div class="container">
+    
+    <?php
    if(isset($_GET["insert_category"])){
     include("insert_category.php");
    }
-
 ?>
     </div>
 
-
-     <div class="container">
-        <?php
-   
+    <div class="container">
+    <?php
      if(isset($_GET["insert_brand"])){
     include("insert_brand.php");
    }
    ?>
-        </div>
+    </div>
+
+    <div class="container">
+    <?php
+    if(isset($_GET["insert_post"])){
+        include("insertPosts.php");
+    }
+    
+      ?>  
+</div>
+
+
          </div>
 
 

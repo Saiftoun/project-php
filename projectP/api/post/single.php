@@ -23,7 +23,7 @@ if(isset($_GET['id'])){
     $data = $post->read_single_post($post->id);
     
     $data->execute();
-    if($data->rowCount()) {
+    if($data->rowCount()) {/*if rows more than 0 */
         $posts = [];
         while($row = $data->fetch(PDO::FETCH_ASSOC)) {
             $posts[] = $row;  
