@@ -3,26 +3,50 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Include database connection and Post model
-include_once('projectP/config/Database.php');
-include_once('projectP/models/Post.php');
-
+include_once('../projectP/config/Database.php');
+include_once('../projectP/models/Post.php');
+include_once('products/config/database1.php');
+include_once('products/models/product1.php');
 
 // Initialize database and get posts
 try {
     $database = new Database();
     $db = $database->connect();
     $post = new Post($db);
+    $database2 = new Database1();
+    $conn = $database2->connect();
+    $product = new Product($conn);
+    $products = $product->read();
     
+/*     fetch categorie
+ */    $category_query = "SELECT * FROM categories ORDER BY category_title ASC";
+    $stmt_cat = $conn->prepare($category_query);
+    $stmt_cat->execute();
+    $categories = $stmt_cat->fetchAll(PDO::FETCH_ASSOC);
+    
+/*      fetch  brands
+ */    $brand_query = "SELECT * FROM brands ORDER BY brand_title ASC";
+    $stmt_brand = $conn->prepare($brand_query);
+    $stmt_brand->execute();
+    $brands = $stmt_brand->fetchAll(PDO::FETCH_ASSOC);
+
+
+
     // Fetch all posts
     $posts = $post->readPosts();
     
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage();
-    $posts = null; // Set to null if error
+    $categories = [];
+    $brands = [];
+    $posts = null; 
 }
 
 // Cookie message
 $message = isset($_COOKIE['user']) ? "Welcome back, " . $_COOKIE['user'] : "Welcome Guest";
+
+
+
 ?>
 
 
@@ -71,7 +95,6 @@ $message = isset($_COOKIE['user']) ? "Welcome back, " . $_COOKIE['user'] : "Welc
 
 
 
-
 <!-- navbar--> 
 <nav class="navbar navbar-expand-lg bg-info">
   <div class="container-fluid">
@@ -84,6 +107,8 @@ $message = isset($_COOKIE['user']) ? "Welcome back, " . $_COOKIE['user'] : "Welc
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
       <span class="navbar-toggler-icon"></span>
     </button>
+
+
 
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
@@ -128,115 +153,67 @@ $message = isset($_COOKIE['user']) ? "Welcome back, " . $_COOKIE['user'] : "Welc
 <!-- product cards -->
 <!-- product + sidebar layout FIX -->
 <div class="container mt-4">
-  <div class="row">
-
-    <!-- PRODUCTS COLUMN (takes 10 spaces) -->
-    <div class="col-md-10">
-
+  <div class="row"> <div class="col-md-9">
       <div class="row">
-
-        <div class="col-md-4 mb-3">
-  <div class="card h-100">
-    <img src="images/images" class="card-img-top" alt="Salade de légumes">
-    <div class="card-body">
-      <h5 class="card-title">Salade de légumes croquants</h5>
-      <p class="card-text">Une salade colorée de légumes frais, riche en fibres, vitamines et antioxydants, idéale pour un repas sain et léger.</p>
-      <a href="#" class="btn btn-info">Add to Cart</a>
-      <a href="#" class="btn btn-secondary">View More</a>
-    </div>
-  </div>
-</div>
-
-
-        <div class="col-md-4 mb-3">
-          <div class="card h-100">
-            <img src="images/jus.webp" class="card-img-top" alt="Juice">
-            <div class="card-body">
-              <h5 class="card-title">jus d'orange</h5>
-              <p class="card-text">Un jus naturel riche en vitamine C et antioxydants, parfait pour un coup de boost sain le matin.</p>
-              <a href="#" class="btn btn-info">Add to Cart</a>
-              <a href="#" class="btn btn-secondary">View More</a>
+        <?php 
+        if($products && $products->rowCount() > 0) {
+            while($row = $products->fetch(PDO::FETCH_ASSOC)) : 
+        ?>
+            <div class="col-md-4 mb-3">
+              <div class="card h-100">
+                <img src="images/<?php echo htmlspecialchars($row['product_image']); ?>" class="card-img-top">
+                <div class="card-body">
+                  <h5><?php echo htmlspecialchars($row['product_title']); ?></h5>
+                  <p><?php echo htmlspecialchars($row['product_description']); ?></p>
+                  <p><small>Brand: <?php echo htmlspecialchars($row['brand_name']); ?></small></p>
+                  <p class="fw-bold text-primary">$<?php echo number_format($row['product_price'],2); ?></p>
+                  <a class="btn btn-info btn-sm">Add to Cart</a>
+                  <a class="btn btn-secondary btn-sm">View More</a>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
+        <?php endwhile; } ?>
+      </div>
+    </div> <div class="col-md-3 bg-secondary p-0">
+      <ul class="navbar-nav text-center">
+        <li class="nav-item bg-info">
+          <a href="#" class="nav-link text-light"><h4>Delivery Brands</h4></a>
+        </li>
+        <?php if(!empty($brands)): ?>
+          <?php foreach($brands as $brand): ?>
+            <li class="nav-item">
+              <a href="?brand_id=<?php echo $brand['brand_id'] ?? $brand['id']; ?>" class="nav-link text-light" >
+                <?php echo htmlspecialchars($brand['brand_title']); ?>
+              </a>
+            </li>
+          <?php endforeach; ?>
+        <?php endif; ?>
+      </ul>
 
-          <div class="col-md-4 mb-3">
-          <div class="card h-100">
-            <img src="images/mer.jpeg" class="card-img-top" alt="Meal">
-            <div class="card-body">
-              <h5 class="card-title">Salade de mer légère aux légumes frais</h5>
-              <p class="card-text">Une combinaison légère de fruits de mer et de légumes frais, riche en protéines et minéraux essentiels.
-              </p>
-              <a href="#" class="btn btn-info">Add to Cart</a>
-              <a href="#" class="btn btn-secondary">View More</a>
-            </div>
-          </div>
-        </div>
-
-          <div class="col-md-4 mb-3">
-          <div class="card h-100">
-            <img src="images/mer.jpeg" class="card-img-top" alt="Meal">
-            <div class="card-body">
-              <h5 class="card-title">Salade de mer légère aux légumes frais</h5>
-              <p class="card-text">Une combinaison légère de fruits de mer et de légumes frais, riche en protéines et minéraux essentiels.
-              </p>
-              <a href="#" class="btn btn-info">Add to Cart</a>
-              <a href="#" class="btn btn-secondary">View More</a>
-            </div>
-          </div>
-        </div>
-
-
-           <div class="col-md-4 mb-3">
-          <div class="card h-100">
-            <img src="images/mer.jpeg" class="card-img-top" alt="Meal">
-            <div class="card-body">
-              <h5 class="card-title">Salade de mer légère aux légumes frais</h5>
-              <p class="card-text">Une combinaison légère de fruits de mer et de légumes frais, riche en protéines et minéraux essentiels.
-              </p>
-              <a href="#" class="btn btn-info">Add to Cart</a>
-              <a href="#" class="btn btn-secondary">View More</a>
-            </div>
-          </div>
-        </div>
-
-      </div> <!-- end product row -->
-    </div> <!-- end col-md-10 -->
-<!-- POSTS SECTION -->
-<!-- SIDEBAR COLUMN -->
-
-
-
-<div class="col-md-2 bg-secondary p-0">
-
-  <ul class="navbar-nav me-auto text-center">
-    <li class="nav-item bg-info"><a href="#" class="nav-link text-light"><h4>Delivery Brands</h4></a></li>
-    <li class="nav-item"><a href="#" class="nav-link text-light">Brand 1</a></li>
-    <li class="nav-item"><a href="#" class="nav-link text-light">Brand 2</a></li>
-    <li class="nav-item"><a href="#" class="nav-link text-light">Brand 3</a></li>
-    <li class="nav-item"><a href="#" class="nav-link text-light">Brand 4</a></li>
-    <li class="nav-item"><a href="#" class="nav-link text-light">Brand 5</a></li>
-  </ul>
-
-  <ul class="navbar-nav me-auto text-center mt-3">
-    <li class="nav-item bg-info"><a href="#" class="nav-link text-light"><h4>Categories</h4></a></li>
-    <li class="nav-item"><a href="#" class="nav-link text-light">Categorie 1</a></li>
-    <li class="nav-item"><a href="#" class="nav-link text-light">Categorie 2</a></li>
-    <li class="nav-item"><a href="#" class="nav-link text-light">Categorie 3</a></li>
-    <li class="nav-item"><a href="#" class="nav-link text-light">Categorie 4</a></li>
-    <li class="nav-item"><a href="#" class="nav-link text-light">Categorie 5</a></li>
-  </ul>
-
-</div> <!-- end col-md-2 -->
-</div> <!-- end row -->
-</div> <!-- end container -->
-
+      <ul class="navbar-nav text-center mt-3">
+        <li class="nav-item bg-info">
+          <a href="#" class="nav-link text-light"><h4>Categories</h4></a>
+        </li>
+        <?php if(!empty($categories)): ?>
+          <?php foreach($categories as $category): ?>
+            <li class="nav-item">
+              <a href="?category_id=<?php echo $category['id']; ?>" class="nav-link text-light">
+                <?php echo htmlspecialchars($category['category_title']); ?>
+              </a>
+            </li>
+          <?php endforeach; ?>
+        <?php endif; ?>
+      </ul>
+    </div> </div> </div>
 <!-- POSTS SECTION (full width) -->
 <div class="container mt-5">
   <h3 class="text-center mb-4">Latest Posts</h3>
 
   <div class="row">
-    <?php while ($row = $posts->fetch(PDO::FETCH_ASSOC)) : ?>
+    <?php 
+if($posts && $posts->rowCount() > 0) {
+    while ($row = $posts->fetch(PDO::FETCH_ASSOC)) : 
+?>
       <div class="col-md-4 mb-3">
         <div class="card h-100">
           <div class="card-body">
@@ -247,9 +224,28 @@ $message = isset($_COOKIE['user']) ? "Welcome back, " . $_COOKIE['user'] : "Welc
           </div>
         </div>
       </div>
-    <?php endwhile; ?>
+<?php 
+    endwhile;
+} else {
+    echo '<p class="text-center col-12">No posts available</p>';
+}
+?>
   </div>
 </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 <!-- footer -->

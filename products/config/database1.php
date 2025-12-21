@@ -1,6 +1,6 @@
 <?php
 
-class Database{
+class Database1{
     
 
     private $host = "localhost";/* ENCAPSULATION*/

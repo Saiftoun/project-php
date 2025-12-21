@@ -1,7 +1,7 @@
 <?php
 include_once('../products/config/database1.php');
 
-$database = new Database();
+$database = new Database1();
 $conn = $database->connect();
 
 if(isset($_POST['insert_brand'])){

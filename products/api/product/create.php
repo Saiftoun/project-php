@@ -2,38 +2,43 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-header('Access-Control-Allow-Origin: *');
-header('Content-Type: application/json');
-header('Access-Control-Allow-Methods: POST');
-
 include_once('../../config/database1.php');
-include_once('../../models/Product.php');
+include_once('../../models/product1.php');
 
-$database = new Database();
+$database = new Database1();
 $db = $database->connect();
 
 $product = new Product($db);
 
-// Read JSON input
-$data = json_decode(file_get_contents("php://input"), true);
-
-if($data) {
+// Check if form was submitted
+if(isset($_POST['insert_product'])) {
+    
+    // Handle image upload
+    $product_image = $_FILES['product_image']['name'];
+    $product_image_tmp = $_FILES['product_image']['tmp_name'];
+    $upload_directory = "../../../images/";
+    
+    // Move uploaded file
+    move_uploaded_file($product_image_tmp, $upload_directory . $product_image);
+    
+    // Prepare data
     $params = [
-        'product_title' => $data['product_title'],
-        'product_description' => $data['product_description'],
-        'product_keyword' => $data['product_keyword'],
-        'category_id' => $data['category_id'],
-        'brand_id' => $data['brand_id'],
-        'product_image' => $data['product_image'],
-        'product_price' => $data['product_price']
+        'product_title' => $_POST['product_title'],
+        'product_description' => $_POST['product_description'],
+        'product_keyword' => $_POST['product_keyword'],
+        'category_id' => $_POST['category_id'],
+        'brand_id' => $_POST['brand_id'],
+        'product_image' => $product_image,
+        'product_price' => $_POST['product_price']
     ];
     
+    // Call create method from Product class
     if($product->create($params)) {
-        echo json_encode(['message' => 'Product Created Successfully']);
+        echo "<script>alert('Product Created Successfully'); window.location.href='../../../admin/index.php';</script>";
     } else {
-        echo json_encode(['message' => 'Product Not Created']);
+        echo "<script>alert('Product Not Created'); window.history.back();</script>";
     }
 } else {
-    echo json_encode(['message' => 'No data provided']);
+    echo "<script>alert('Invalid Request'); window.history.back();</script>";
 }
 ?>

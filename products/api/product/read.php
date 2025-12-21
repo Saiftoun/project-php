@@ -9,7 +9,7 @@ header('Access-Control-Allow-Methods: GET');
 include_once('../../config/database1.php');
 include_once('../../models/Product.php');
 
-$database = new Database();
+$database = new Database1();
 $db = $database->connect();
 
 $product = new Product($db);

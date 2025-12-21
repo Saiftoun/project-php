@@ -1,7 +1,7 @@
 <?php
 session_start();
 include_once('../products/config/database1.php');  // Changed include to include_once
-$database = new Database();
+$database = new Database1();
 $conn = $database->connect();
 ?>
 <!DOCTYPE html>
@@ -92,7 +92,7 @@ $conn = $database->connect();
 
             <div class="button text-center">
                 <button class="btn btn-info w-100 my-1"><a href="index.php?insert_post" class="nav-link text-light">Insert Posts</a></button>
-                <button class="btn btn-info w-100 my-1"><a href="#" class="nav-link text-light">Insert Products</a></button>
+                <button class="btn btn-info w-100 my-1"><a href="../admin/insert_product.php" class="nav-link text-light">Insert Products</a></button>
                 <button class="btn btn-info w-100 my-1"><a href="#" class="nav-link text-light">View Products</a></button>
                 <button class="btn btn-info w-100 my-1"><a href="index.php?insert_category" class="nav-link text-light">Insert Categories</a></button>
                 <button class="btn btn-info w-100 my-1"><a href="#" class="nav-link text-light">View Categories</a></button>
