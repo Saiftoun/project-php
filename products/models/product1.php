@@ -85,6 +85,86 @@ class Product {
             return false;
         }
     }
+
+
+public function readByBrand($brand_id) {
+    $query = "SELECT p.*, c.category_title as category_name, b.brand_title as brand_name
+              FROM " . $this->table . " p
+              LEFT JOIN categories c ON p.category_id = c.id
+              LEFT JOIN brands b ON p.brand_id = b.id
+              WHERE p.brand_id = :brand_id
+              ORDER BY p.created_at DESC";
+    $stmt = $this->connections->prepare($query);
+    $stmt->bindParam(':brand_id', $brand_id);
+    $stmt->execute();
+    return $stmt;
+}
+
+public function readByCategory($category_id) {
+    $query = "SELECT p.*, c.category_title as category_name, b.brand_title as brand_name
+              FROM " . $this->table . " p
+              LEFT JOIN categories c ON p.category_id = c.id
+              LEFT JOIN brands b ON p.brand_id = b.id
+              WHERE p.category_id = :category_id
+              ORDER BY p.created_at DESC";
+    $stmt = $this->connections->prepare($query);
+    $stmt->bindParam(':category_id', $category_id);
+    $stmt->execute();
+    return $stmt;
+}
+public function search_product($value) {
+    $query = "SELECT p.*, c.category_title as category_name, b.brand_title as brand_name
+              FROM " . $this->table . " p
+              LEFT JOIN categories c ON p.category_id = c.id
+              LEFT JOIN brands b ON p.brand_id = b.id
+              WHERE p.product_keyword LIKE :search
+              ORDER BY p.created_at DESC";
+    
+    $stmt = $this->connections->prepare($query);
+    $search_term = "%{$value}%";
+    $stmt->bindParam(':search', $search_term);
+    $stmt->execute();
+    return $stmt;
+}
+
+// Read single product by ID
+public function readSingle($product_id) {
+    try {
+        $query = "SELECT 
+                    p.id,
+                    p.product_title,
+                    p.product_description,
+                    p.product_keyword,
+                    p.category_id,
+                    c.category_title as category_name,
+                    p.brand_id,
+                    b.brand_title as brand_name,
+                    p.product_image,
+                    p.product_price,
+                    p.created_at
+                  FROM " . $this->table . " p
+                  LEFT JOIN categories c ON p.category_id = c.id
+                  LEFT JOIN brands b ON p.brand_id = b.id
+                  WHERE p.id = :product_id
+                  LIMIT 1";
+
+        $stmt = $this->connections->prepare($query);
+        $stmt->bindParam(':product_id', $product_id);
+        $stmt->execute();
+
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result;
+
+    } catch(PDOException $e) {
+        echo "Error: " . $e->getMessage();
+        return false;
+    }
+}
+
+
+
+
+
 }
 
 

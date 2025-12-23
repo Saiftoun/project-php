@@ -1,4 +1,5 @@
 <?php
+session_start();  
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -29,6 +30,27 @@ try {
     $stmt_brand = $conn->prepare($brand_query);
     $stmt_brand->execute();
     $brands = $stmt_brand->fetchAll(PDO::FETCH_ASSOC);
+
+$brand_filter = isset($_GET['brand_id']) ? $_GET['brand_id'] : null;
+$category_filter = isset($_GET['category_id']) ? $_GET['category_id'] : null;
+$search_value = isset($_GET['search']) ? $_GET['search'] : null;
+
+// Create product object
+$product = new Product($conn);
+
+// Decide which products to show (priority: search > brand > category > all)
+if($search_value) {
+    $products = $product->search_product($search_value);
+} elseif($brand_filter) {
+    $products = $product->readByBrand($brand_filter);
+} elseif($category_filter) {
+    $products = $product->readByCategory($category_filter);
+} else {
+    $products = $product->read();
+}
+
+
+
 
 
 
@@ -117,13 +139,31 @@ $message = isset($_COOKIE['user']) ? "Welcome back, " . $_COOKIE['user'] : "Welc
         <li class="nav-item"><a class="nav-link" href="#">Register</a></li>
         <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
         <li class="nav-item"><a class="nav-link" href="#"><i class="fa-solid fa-cart-shopping"></i><sup>1</sup></a></li>
-        <li class="nav-item"><a class="nav-link" href="#">Total: $100</a></li>
+        <?php
+        //  cart total
+        $cart_total = 0;
+        if(isset($_SESSION['cart']) && !empty($_SESSION['cart'])) {
+        $temp_product = new Product($conn);
+        foreach($_SESSION['cart'] as $pid => $qty) {
+        $temp_details = $temp_product->readSingle($pid);
+        if($temp_details) {
+            $cart_total += $temp_details['product_price'] * $qty;
+        }
+        }
+        }
+        ?>
+        <li class="nav-item"><a class="nav-link" href="cart.php">Total: $<?php echo number_format($cart_total, 2); ?></a></li>
+
+
+
+
+
       </ul>
 
-    <form class="d-flex" role="search">
-    <input class="form-control me-2 " type="search" placeholder="Search" aria-label="Search">
+   <form class="d-flex" role="search" method="GET" action="">
+    <input class="form-control me-2" type="search" placeholder="Search" name="search" aria-label="Search">
+    <button type="submit" class="btn btn-outline-light">Search</button>
 
-    <button class="btn btn-outline-light " type="submit">Search</button> 
 
     <a href="../ProjectDSI/CRUD/login.php" class="btn btn-primary ms-2" role="button">login</a>
 
@@ -167,8 +207,14 @@ $message = isset($_COOKIE['user']) ? "Welcome back, " . $_COOKIE['user'] : "Welc
                   <p><?php echo htmlspecialchars($row['product_description']); ?></p>
                   <p><small>Brand: <?php echo htmlspecialchars($row['brand_name']); ?></small></p>
                   <p class="fw-bold text-primary">$<?php echo number_format($row['product_price'],2); ?></p>
-                  <a class="btn btn-info btn-sm">Add to Cart</a>
-                  <a class="btn btn-secondary btn-sm">View More</a>
+                  <form method="POST" action="cart.php" style="display: inline;">
+                  <input type="hidden" name="product_id" value="<?php echo $row['id']; ?>">
+                  <button type="submit" name="add_to_cart" class="btn btn-info btn-sm">
+                  <i class="fa-solid fa-cart-plus"></i> Add to Cart
+                  </button>
+                  </form>
+
+                  <a href="product_details.php?product_id=<?php echo $row['id']; ?>" class="btn btn-secondary btn-sm">View More</a>
                 </div>
               </div>
             </div>
@@ -197,7 +243,7 @@ $message = isset($_COOKIE['user']) ? "Welcome back, " . $_COOKIE['user'] : "Welc
         <?php if(!empty($categories)): ?>
           <?php foreach($categories as $category): ?>
             <li class="nav-item">
-              <a href="?category_id=<?php echo $category['id']; ?>" class="nav-link text-light">
+              <a href="?category_id=<?php echo $category['id']; ?>"  class="nav-link text-light">
                 <?php echo htmlspecialchars($category['category_title']); ?>
               </a>
             </li>
@@ -232,8 +278,6 @@ if($posts && $posts->rowCount() > 0) {
 ?>
   </div>
 </div>
-
-
 
 
 

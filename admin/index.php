@@ -86,7 +86,7 @@ $conn = $database->connect();
         <!-- CORRECTED: Changed col-md-12 to col-md-2 for sidebar -->
         <div class="col-md-2 bg-secondary p-3">
             <div>
-                <a href="#"><img src="../images/jus.webp" alt="Admin" class="admin"></a>
+                <a href="../index.php"><img src="../images/jus.webp" alt="Admin" class="admin"></a>
                 <p class="text-light text-center">Saifeddine tounsi</p>
             </div>
 
