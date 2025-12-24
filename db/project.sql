@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3306
--- Généré le : mar. 23 déc. 2025 à 22:20
+-- Généré le : mer. 24 déc. 2025 à 14:12
 -- Version du serveur : 9.1.0
 -- Version de PHP : 8.3.14
 
@@ -40,10 +40,10 @@ CREATE TABLE IF NOT EXISTS `category` (
 --
 
 INSERT INTO `category` (`id`, `name`, `created_at`) VALUES
-(1, 'php', '2022-02-19 12:07:31'),
-(2, 'python', '2022-02-19 12:07:31'),
-(3, 'java', '2022-02-19 12:07:41'),
-(4, 'javascript', '2022-02-19 12:07:41');
+(1, 'Recipe_Jus', '2022-02-19 12:07:31'),
+(2, 'Recipe_Jus', '2022-02-19 12:07:31'),
+(3, 'Recipe_Jus', '2022-02-19 12:07:41'),
+(4, 'Recipe_Jus', '2022-02-19 12:07:41');
 
 -- --------------------------------------------------------
 
@@ -67,8 +67,7 @@ CREATE TABLE IF NOT EXISTS `posts` (
 --
 
 INSERT INTO `posts` (`id`, `title`, `category_id`, `description`, `created_at`) VALUES
-(19, 'Salade de légumes croquants', 3, '1 concombre\n\n2 tomates\n\n1 poivron rouge\n\n1 carotte\n\n50 g de roquette ou jeunes pousses\n\n1 cuillère à soupe d’huile d’olive\n\n1 cuillère à café de jus de citron\n\nSel et poivre au goût\n\n(Optionnel) herbes fraîches : persil, ciboulette ou basilic', '2025-12-05 15:30:44'),
-(32, 'gg', 44, 'rrrrrrr', '2025-12-13 17:09:21');
+(19, 'Salade de légumes croquants', 3, '1 concombre\n\n2 tomates\n\n1 poivron rouge\n\n1 carotte\n\n50 g de roquette ou jeunes pousses\n\n1 cuillère à soupe d’huile d’olive\n\n1 cuillère à café de jus de citron\n\nSel et poivre au goût\n\n(Optionnel) herbes fraîches : persil, ciboulette ou basilic', '2025-12-05 15:30:44');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
